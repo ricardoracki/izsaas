@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/database/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  BANNED
+  BLOCKED
+  PENDING
+  LIMITED
+  MEMBER
+  MODERATOR
+  ADMIN
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  BLOCKED
+  PRIVATE
+  SOFT_DELETED
+}
+
+enum SharedPostStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+  PERMANENT
+  SOFT_DELETED
+}
+
+model User {
+  id          String     @id @default(uuid())
+  name        String
+  email       String     @unique
+  password    String
+  image       String?
+  status      UserStatus @default(PENDING)
+  description String?
+
+  lastAccessedAt DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  Post       Post[]
+  SharedPost SharedPost[]
+
+  @@map("users")
+}
+
+model Post {
+  id      String     @id @default(uuid())
+  content String
+  title   String
+  tags    String[]
+  images  String[]   @default([])
+  views   Int        @default(0)
+  likes   Int        @default(0)
+  status  PostStatus @default(DRAFT)
+  userId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author     User         @relation(fields: [userId], references: [id], onDelete: NoAction)
+  SharedPost SharedPost[]
+
+  @@map("posts")
+}
+
+model SharedPost {
+  id       String   @id @default(uuid())
+  views    Int      @default(0)
+  likes    Int      @default(0)
+  validate DateTime
+  status   String
+  userId   String
+  postId   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdBy User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updateAt  DateTime @updatedAt
+
+  @@unique([userId, postId])
+  @@map("shared_posts")
+}
