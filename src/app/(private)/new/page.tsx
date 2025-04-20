@@ -11,6 +11,7 @@ import {
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -22,6 +23,7 @@ const formSchema = z.object({
     .min(5, 'O título deve conter ao menos 5 caracteres')
     .max(32, 'O título deve conter no máximo 32 caracteres'),
   tags: z.string().min(2, 'Deve conter ao menos uma tag'),
+  files: z.string().nullable(),
   content: z.string(),
 })
 
@@ -78,10 +80,23 @@ export default function New() {
           />
           <FormField
             control={form.control}
+            name="files"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tags</FormLabel>
+                <FormControl>
+                  <Input type="file" multiple />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Conteúdo</FormLabel>
+                <FormLabel>Imagens</FormLabel>
                 <FormControl>
                   <Textarea {...field} />
                 </FormControl>
@@ -90,6 +105,10 @@ export default function New() {
               </FormItem>
             )}
           />
+          <div className="flex items-center gap-3">
+            <Switch />
+            Salvar como rascunho??
+          </div>
           <Button type="submit">Salvar</Button>
         </form>
       </Form>

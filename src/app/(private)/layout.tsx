@@ -36,7 +36,9 @@ export default function Layout({
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <main className="w-full max-w-4xl ">{children}</main>
+          <main className="w-full max-w-4xl overflow-hidden pb-12">
+            {children}
+          </main>
         </div>
       </div>
     </div>

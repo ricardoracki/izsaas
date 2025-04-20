@@ -24,9 +24,9 @@ export default function Dashboard() {
           </Button>
         </div>
       </div>
-      <p className="text-lg text-muted-foreground">
+      <h2 className="text-lg text-muted-foreground">
         Como calibrar um detector de marca(foto-célula)
-      </p>
+      </h2>
       <div className="flex flex-wrap gap-1">
         <Badge className="text-xs" variant="secondary">
           Calibração

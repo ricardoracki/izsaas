@@ -18,6 +18,7 @@ import {
 
 import { Input } from './ui/input'
 import Link from 'next/link'
+import { LogoutButton } from './logout-button'
 import { ToggleTheme } from './toggle-theme'
 
 export const Header = () => (
@@ -26,7 +27,7 @@ export const Header = () => (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuLink>Home</NavigationMenuLink>
+          <NavigationMenuLink href="/">Home</NavigationMenuLink>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
@@ -36,7 +37,9 @@ export const Header = () => (
               Buscar tutorial
             </NavigationMenuLink>
             <NavigationMenuLink>Compartilhamentos</NavigationMenuLink>
-            <NavigationMenuLink>Links temporários</NavigationMenuLink>
+            <NavigationMenuLink href={'/shared-links'}>
+              Links temporários
+            </NavigationMenuLink>
             <NavigationMenuLink href={'/new'}>
               Criar tutorial
             </NavigationMenuLink>
@@ -44,7 +47,7 @@ export const Header = () => (
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuLink>Usuários</NavigationMenuLink>
+          <NavigationMenuLink href="/users">Usuários</NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
@@ -68,7 +71,9 @@ export const Header = () => (
           <Link href="#">Perfil</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Logout</DropdownMenuItem>
+        <DropdownMenuItem>
+          <LogoutButton />
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
 
