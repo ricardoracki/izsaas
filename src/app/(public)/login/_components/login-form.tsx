@@ -1,12 +1,22 @@
 'use client'
 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { RedirectType, useRouter, useSearchParams } from 'next/navigation'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import { login } from '../actions'
+import { Separator } from '@/components/ui/separator'
+import { signIn } from 'next-auth/react'
+import { toast } from 'sonner'
 import { useForm } from 'react-hook-form'
-import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,83 +29,93 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>
 
 export const LoginForm = () => {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const searchParams = useSearchParams()
-
-  const { handleSubmit, register } = useForm<FormData>({
+  const router = useRouter()
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   })
 
-  async function handleSubmitLogin(data: FormData) {
+  async function handleLogin(data: FormData) {
     try {
       setLoading(true)
-
-      await login({
+      const res = await signIn('credentials', {
         ...data,
-        redirectTarget: searchParams.get('from') || '/home',
+        redirect: false,
       })
+
+      if (res?.error) {
+        toast('email ou senha incorretos')
+      } else if (res?.ok) {
+        const callbackUrl = searchParams.get('from') || '/home'
+
+        return router.replace(callbackUrl as RedirectType)
+      }
     } catch (error) {
+      toast('Algo deu errado, tente novamente mais tarde')
       console.error(error)
-      // TODO implementar em caso de erro
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitLogin)}>
-      <div className="flex flex-col gap-6">
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="usuario@example.com"
-            required
-            {...register('email')}
-          />
-        </div>
-        <div className="grid gap-2">
-          <div className="flex items-center">
-            <Label htmlFor="password">Senha</Label>
-            <a
-              href="#"
-              className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-            >
-              Esqueceu sua senha?
-            </a>
-          </div>
-          <Input
-            id="password"
-            type="password"
-            required
-            {...register('password')}
-          />
-        </div>
-        <Button type="submit" className="w-full">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="usuario@email.com"
+                  type="email"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex items-center justify-between">
+                <FormLabel>Senha</FormLabel>
+                <Link href="#" className="text-xs ">
+                  Esqueci a senha
+                </Link>
+              </div>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" className="w-full" loading={loading}>
           Login
         </Button>
-        <span className="w-full flex items-center justify-center h-0.5 bg-border rounded-full">
-          <span className="relative z-10 bg-card px-2 text-muted-foreground">
-            Ou
-          </span>
-        </span>
-        <Button variant="outline" className="w-full" loading={loading}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path
-              d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-              fill="currentColor"
-            />
-          </svg>
-          Login com a conta Google
-        </Button>
-      </div>
-      <div className="mt-4 text-center text-sm">
-        Não possui conta?{' '}
-        <Link href="/register" className="underline underline-offset-4">
-          Registre-se
-        </Link>
-      </div>
-    </form>
+        <div>
+          <Separator />
+
+          <div className="text-center text-sm mt-2">
+            Não possui uma conta?{' '}
+            <Link href="/register" className="underline underline-offset-4">
+              Cadastrar-se
+            </Link>
+          </div>
+        </div>
+      </form>
+    </Form>
   )
 }

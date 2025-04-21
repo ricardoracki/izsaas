@@ -20,63 +20,70 @@ import { Input } from './ui/input'
 import Link from 'next/link'
 import { LogoutButton } from './logout-button'
 import { ToggleTheme } from './toggle-theme'
+import { getServerAuthSession } from '@/auth'
+import { getUserInitials } from '@/lib/utils'
 
-export const Header = () => (
-  <header className="fixed top-0 left-0 right-0 h-14 bg-background/60 backdrop-blur-sm px-6 border-dashed border-b flex items-center  gap-x-4 ">
-    <span className="text-xl font-semibold">IZSaaS</span>
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuLink href="/">Home</NavigationMenuLink>
-        </NavigationMenuItem>
+export const Header = async () => {
+  const session = await getServerAuthSession()
+  const userInitials = getUserInitials(session?.user?.name)
 
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Tutoriais</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <NavigationMenuLink href={'/tutorials'}>
-              Buscar tutorial
-            </NavigationMenuLink>
-            <NavigationMenuLink>Compartilhamentos</NavigationMenuLink>
-            <NavigationMenuLink href={'/shared-links'}>
-              Links temporários
-            </NavigationMenuLink>
-            <NavigationMenuLink href={'/new'}>
-              Criar tutorial
-            </NavigationMenuLink>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+  return (
+    <header className="fixed top-0 left-0 right-0 h-14 bg-background/60 backdrop-blur-sm px-6 border-dashed border-b flex items-center  gap-x-4 ">
+      <span className="text-xl font-semibold">IZSaaS</span>
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="/">Home</NavigationMenuLink>
+          </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <NavigationMenuLink href="/users">Usuários</NavigationMenuLink>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Tutoriais</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <NavigationMenuLink href={'/tutorials'}>
+                Buscar tutorial
+              </NavigationMenuLink>
+              <NavigationMenuLink>Compartilhamentos</NavigationMenuLink>
+              <NavigationMenuLink href={'/shared-links'}>
+                Links temporários
+              </NavigationMenuLink>
+              <NavigationMenuLink href={'/new'}>
+                Criar tutorial
+              </NavigationMenuLink>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-    <span className="flex-1" />
-    <Input placeholder="Search..." className="max-w-xs" />
+          <NavigationMenuItem>
+            <NavigationMenuLink href="/users">Usuários</NavigationMenuLink>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
 
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel className="text-muted-foreground">
-          Minha conta
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="#">Perfil</Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <LogoutButton />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      <span className="flex-1" />
+      <Input placeholder="Search..." className="max-w-xs" />
 
-    <ToggleTheme />
-  </header>
-)
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Avatar>
+            <AvatarImage src={session?.user?.image || undefined} />
+            <AvatarFallback>{userInitials}</AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuLabel className="text-muted-foreground">
+            Minha conta
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link href="#">Perfil</Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <LogoutButton />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <ToggleTheme />
+    </header>
+  )
+}
