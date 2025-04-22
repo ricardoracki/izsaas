@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/card'
 
 import { LoginForm } from './_components/login-form'
+import { Suspense } from 'react'
 import { cn } from '@/lib/utils'
 
 export default async function Login(props: any) {
@@ -22,7 +23,9 @@ export default async function Login(props: any) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <LoginForm />
+              <Suspense>
+                <LoginForm />
+              </Suspense>
             </CardContent>
           </Card>
         </div>
