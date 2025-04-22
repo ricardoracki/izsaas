@@ -32,7 +32,6 @@ export const authOptions: NextAuthOptions = {
     },
 
     session: ({ session, token }) => {
-      console.log('session')
       return {
         ...session,
         user: {

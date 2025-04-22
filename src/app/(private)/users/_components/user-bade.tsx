@@ -1,39 +1,54 @@
-import { AlertCircle, Ban, CheckCircle, Clock, Lock } from 'lucide-react'
+import {
+  AlertCircle,
+  Ban,
+  CheckCircle,
+  Clock,
+  Lock,
+  ShieldCheck,
+} from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
+import { UserStatus } from '@/database/generated'
 
 type Props = {
-  status: 'approved' | 'pending' | 'blocked' | 'banned'
+  status: UserStatus
 }
 
 export const UserBadge = ({ status }: Props) => {
   switch (status) {
-    case 'approved':
+    case 'MEMBER':
       return (
         <Badge variant="outline" className=" text-green-700 border-green-700">
           <CheckCircle className="h-3 w-3 mr-1" />
-          Aprovado
+          Membro
         </Badge>
       )
-    case 'pending':
+    case 'PENDING':
       return (
         <Badge variant="outline" className=" text-yellow-700 border-yellow-700">
           <Clock className="h-3 w-3 mr-1" />
           Pendente
         </Badge>
       )
-    case 'blocked':
+    case 'BLOCKED':
       return (
         <Badge variant="outline" className=" text-orange-700 border-orange-700">
           <Lock className="h-3 w-3 mr-1" />
           Bloqueado
         </Badge>
       )
-    case 'banned':
+    case 'BANNED':
       return (
         <Badge variant="outline" className=" text-red-700 border-red-700">
           <Ban className="h-3 w-3 mr-1" />
           Banido
+        </Badge>
+      )
+    case 'ADMIN':
+      return (
+        <Badge variant="outline" className=" text-purple-700 border-purple-700">
+          <ShieldCheck className="h-3 w-3 mr-1" />
+          Admin
         </Badge>
       )
     default:
