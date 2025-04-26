@@ -190,7 +190,7 @@ export default function TutorialList() {
           Tutoriais
         </h1>
         <Button asChild variant="outline">
-          <Link href="/app/new">
+          <Link href="/tutorials/new">
             <Plus />
             Criar tutorial
           </Link>

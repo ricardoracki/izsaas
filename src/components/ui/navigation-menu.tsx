@@ -9,16 +9,24 @@ function NavigationMenu({
   className,
   children,
   viewport = true,
+  horizontal = false,
   ...props
 }: React.ComponentProps<typeof NavigationMenuPrimitive.Root> & {
   viewport?: boolean
+  horizontal?: boolean
 }) {
+  //flex-1 items-center justify-center
   return (
     <NavigationMenuPrimitive.Root
       data-slot="navigation-menu"
       data-viewport={viewport}
       className={cn(
-        'group/navigation-menu relative flex max-w-max flex-1 items-center justify-center',
+        'group/navigation-menu relative flex max-w-max',
+        {
+          'flex-1 items-center justify-center': horizontal,
+          '[&_ul]:flex-col [&_ul]:flex-start flex-start': !horizontal,
+        },
+
         className
       )}
       {...props}
@@ -52,7 +60,7 @@ function NavigationMenuItem({
   return (
     <NavigationMenuPrimitive.Item
       data-slot="navigation-menu-item"
-      className={cn('relative', className)}
+      className={cn('relative cursor-pointer', className)}
       {...props}
     />
   )
