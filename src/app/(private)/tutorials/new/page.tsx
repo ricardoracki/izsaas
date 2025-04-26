@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   Form,
@@ -7,40 +7,69 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { createPost } from "./actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z
     .string()
-    .min(5, 'O título deve conter ao menos 5 caracteres')
-    .max(32, 'O título deve conter no máximo 32 caracteres'),
-  tags: z.string().min(2, 'Deve conter ao menos uma tag'),
-  files: z.string().nullable(),
+    .min(5, "O título deve conter ao menos 5 caracteres")
+    .max(32, "O título deve conter no máximo 32 caracteres"),
+  tags: z.string().min(2, "Deve conter ao menos uma tag"),
+  files: z.string().optional(),
   content: z.string(),
-})
+});
 
-type FormSchema = z.infer<typeof formSchema>
+type FormSchema = z.infer<typeof formSchema>;
 
 export default function New() {
+  const [loading, setLoading] = useState(false);
+  const [isDraft, setIsDraft] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
+  const router = useRouter();
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      tags: '',
-      content: '',
+      title: "",
+      tags: "",
+      content: "",
     },
-  })
+  });
 
-  function onSubmit(data: FormSchema) {
-    console.log(data)
+  async function onSubmit(data: FormSchema) {
+    try {
+      setLoading(true);
+      const { files, ...rest } = data;
+
+      const id = await createPost(
+        {
+          ...rest,
+          tags: rest.tags.split(",").map((tag) => tag.trim()),
+        },
+        isDraft
+      );
+
+      toast("Tutorial criado com sucesso!");
+
+      router.replace(`/tutorials/${id}`);
+    } catch (e) {
+      console.error(e);
+      toast("Ocorreu um erro inesperado ao criar o tutorial");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -83,7 +112,7 @@ export default function New() {
             name="files"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tags</FormLabel>
+                <FormLabel>Imagens</FormLabel>
                 <FormControl>
                   <Input type="file" multiple />
                 </FormControl>
@@ -96,7 +125,7 @@ export default function New() {
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Imagens</FormLabel>
+                <FormLabel>Conteúdo</FormLabel>
                 <FormControl>
                   <Textarea {...field} />
                 </FormControl>
@@ -106,12 +135,14 @@ export default function New() {
             )}
           />
           <div className="flex items-center gap-3">
-            <Switch />
-            Salvar como rascunho??
+            <Switch checked={isDraft} onClick={() => setIsDraft((v) => !v)} />
+            Salvar como rascunho?
           </div>
-          <Button type="submit">Salvar</Button>
+          <Button type="submit" loading={loading}>
+            Salvar
+          </Button>
         </form>
       </Form>
     </>
-  )
+  );
 }

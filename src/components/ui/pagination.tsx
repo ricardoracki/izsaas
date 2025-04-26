@@ -50,7 +50,6 @@ export const Pagination = ({
             key={`user-pagination-${page}`}
             variant="outline"
             size="sm"
-            className="bg-primary text-primary-foreground"
             disabled={page == currentPage}
             onClick={() => handleNavigation(page)}
           >
