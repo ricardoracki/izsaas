@@ -1,5 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Shield, UserCheck } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Shield, UserCheck } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -7,40 +7,40 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { getIntQueryValue, getUserInitials } from '@/lib/utils'
+} from "@/components/ui/table";
+import { getIntQueryValue, getUserInitials } from "@/lib/utils";
 
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Filters } from './_components/filters'
-import { Pagination } from './_components/pagination'
-import { UserBadge } from './_components/user-bade'
-import { UserControls } from './_components/user-controls'
-import { UserStatus } from '@/database/generated'
-import { db } from '@/database/client'
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Filters } from "./_components/filters";
+import { Pagination } from "../../../components/ui/pagination";
+import { UserBadge } from "./_components/user-bade";
+import { UserControls } from "./_components/user-controls";
+import { UserStatus } from "@/database/generated";
+import { db } from "@/database/client";
 
 type RouteProps = {
   searchParams: Promise<{
-    page?: string
-    perPage?: string
-    status?: string
-    q?: string
-  }>
-}
+    page?: string;
+    perPage?: string;
+    status?: string;
+    q?: string;
+  }>;
+};
 
 export default async function AdminUsers({ searchParams }: RouteProps) {
-  const query = await searchParams
+  const query = await searchParams;
 
-  const page = getIntQueryValue(query.page) || 1
-  const perPage = getIntQueryValue(query.perPage) || 10
+  const page = getIntQueryValue(query.page) || 1;
+  const perPage = getIntQueryValue(query.perPage) || 10;
   const statusFiltered: UserStatus[] = (
     query.status
-      ? (query.status.split(' ').map((t) => t.toUpperCase()) as UserStatus[])
+      ? (query.status.split(" ").map((t) => t.toUpperCase()) as UserStatus[])
       : []
-  ).filter((a) => a in UserStatus)
-  const nameFiltered = query.q
+  ).filter((a) => a in UserStatus);
+  const nameFiltered = query.q;
 
-  console.log(statusFiltered)
+  console.log(statusFiltered);
 
   const [users, count] = await Promise.all([
     db.user.findMany({
@@ -48,8 +48,8 @@ export default async function AdminUsers({ searchParams }: RouteProps) {
         OR: nameFiltered
           ? [
               {
-                name: { contains: nameFiltered, mode: 'insensitive' },
-                email: { contains: nameFiltered, mode: 'insensitive' },
+                name: { contains: nameFiltered, mode: "insensitive" },
+                email: { contains: nameFiltered, mode: "insensitive" },
               },
             ]
           : undefined,
@@ -74,17 +74,17 @@ export default async function AdminUsers({ searchParams }: RouteProps) {
         OR: nameFiltered
           ? [
               {
-                name: { contains: nameFiltered, mode: 'insensitive' },
-                email: { contains: nameFiltered, mode: 'insensitive' },
+                name: { contains: nameFiltered, mode: "insensitive" },
+                email: { contains: nameFiltered, mode: "insensitive" },
               },
             ]
           : undefined,
         status: statusFiltered.length > 0 ? { in: statusFiltered } : undefined,
       },
     }),
-  ])
+  ]);
 
-  const pages = Math.ceil(count / perPage)
+  const pages = Math.ceil(count / perPage);
 
   return (
     <>
@@ -135,7 +135,7 @@ export default async function AdminUsers({ searchParams }: RouteProps) {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        <AvatarImage src={user.image || ''} alt={user.name} />
+                        <AvatarImage src={user.image || ""} alt={user.name} />
                         <AvatarFallback>
                           {getUserInitials(user.name)}
                         </AvatarFallback>
@@ -150,10 +150,10 @@ export default async function AdminUsers({ searchParams }: RouteProps) {
                   </TableCell>
 
                   <TableCell className="hidden md:table-cell">
-                    {user.createdAt.toLocaleDateString('pt-BR')}
+                    {user.createdAt.toLocaleDateString("pt-BR")}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">
-                    {user.lastAccessedAt.toLocaleDateString('pt-BR')}
+                    {user.lastAccessedAt.toLocaleDateString("pt-BR")}
                   </TableCell>
                   <TableCell>
                     <UserBadge status={user.status as any} />
@@ -184,8 +184,9 @@ export default async function AdminUsers({ searchParams }: RouteProps) {
           pages={pages}
           total={count}
           perPage={perPage}
+          messageUnit="usuários"
         />
       </div>
     </>
-  )
+  );
 }
