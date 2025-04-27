@@ -84,7 +84,7 @@ export function PostsList({ userId, perPage, page }: TutorialListProps) {
         <div className="space-y-4 ">
           {posts.length === 0 && (
             <div className="text-center py-8 text-gray-500">
-              {!!deferredSearch
+              {!deferredSearch
                 ? "Nenhum tutorial encontrado"
                 : `Nenhum tutorial encontrado para ${deferredSearch}`}
             </div>
