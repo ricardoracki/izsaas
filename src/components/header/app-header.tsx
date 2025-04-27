@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Cog, File, Home, LogOut, Menu, Search, X } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Book, Cog, Home, LogOut, Menu, Search, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,56 +9,56 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from "@/components/ui/dropdown-menu";
 import {
   NavContainer,
   NavItem,
   NavItemLink,
   NavList,
   NavPortal,
-} from '@/components/header/app-nav'
-import { cn, getUserInitials } from '@/lib/utils'
-import { useCallback, useEffect, useState } from 'react'
+} from "@/components/header/app-nav";
+import { cn, getUserInitials } from "@/lib/utils";
+import { useCallback, useEffect, useState } from "react";
 
-import { Button } from '../ui/button'
-import Link from 'next/link'
-import { Logo } from '../logo'
-import { ToggleTheme } from '../toggle-theme'
-import { User } from '@/auth'
-import { signOut } from 'next-auth/react'
-import { usePathname } from 'next/navigation'
+import { Button } from "../ui/button";
+import Link from "next/link";
+import { Logo } from "../logo";
+import { ToggleTheme } from "../toggle-theme";
+import { User } from "@/auth";
+import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 type Route = {
-  label: string
-  href: string
-  Icon: React.ReactNode
-}
+  label: string;
+  href: string;
+  Icon: React.ReactNode;
+};
 
 const routes: Route[] = [
-  { href: '/home', label: 'Início', Icon: <Home /> },
-  { href: '/tutorials', label: 'Tutoriais', Icon: <File /> },
-]
+  { href: "/home", label: "Início", Icon: <Home /> },
+  { href: "/tutorials", label: "Tutoriais", Icon: <Book /> },
+];
 
 type Props = {
-  user?: User
-}
+  user?: User;
+};
 
 export const AppHeader = ({ user }: Props) => {
-  const [open, setOpen] = useState(false)
-  const pathname = usePathname()
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    onClose()
-  }, [pathname])
+    onClose();
+  }, [pathname]);
 
-  const onOpen = useCallback(() => setOpen(true), [])
-  const onClose = useCallback(() => setOpen(false), [])
+  const onOpen = useCallback(() => setOpen(true), []);
+  const onClose = useCallback(() => setOpen(false), []);
 
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 h-18 flex items-center gap-3 px-3 border-b border-border border-dashed bg-background/60 backdrop-blur-sm">
         <Button
-          variant={'outline'}
+          variant={"outline"}
           size="icon"
           onClick={onOpen}
           className="md:hidden"
@@ -96,7 +96,7 @@ export const AppHeader = ({ user }: Props) => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar className="size-10">
-              <AvatarImage alt={user?.name || ''} src={user?.image || ''} />
+              <AvatarImage alt={user?.name || ""} src={user?.image || ""} />
               <AvatarFallback>{getUserInitials(user?.name)}</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
@@ -120,10 +120,10 @@ export const AppHeader = ({ user }: Props) => {
         role="navigation"
         aria-label="Navegação principal (celular)"
         className={cn(
-          'overflow-hidden transition-all ease-in-out duration-300 md:hidden',
+          "overflow-hidden transition-all ease-in-out duration-300 md:hidden",
           {
-            'w-screen': open,
-            'w-0': !open,
+            "w-screen": open,
+            "w-0": !open,
           }
         )}
       >
@@ -170,5 +170,5 @@ export const AppHeader = ({ user }: Props) => {
         </NavContainer>
       </NavPortal>
     </>
-  )
-}
+  );
+};

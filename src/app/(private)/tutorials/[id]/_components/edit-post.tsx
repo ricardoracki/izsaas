@@ -98,7 +98,7 @@ export function EditPostButton({ size, userId, post }: EditPostButtonProps) {
         size={size}
         onClick={() => setOpen(true)}
       >
-        <Edit /> {size !== "icon" && "Editar tutorial"}
+        <Edit /> {size !== "icon" && "Editar"}
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>

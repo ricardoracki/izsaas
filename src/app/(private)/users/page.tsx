@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Filters } from "./_components/filters";
 import { Pagination } from "../../../components/ui/pagination";
-import { UserBadge } from "./_components/user-bade";
+import { UserBadge } from "./_components/user-badge";
 import { UserControls } from "./_components/user-controls";
 import { UserStatus } from "@/database/generated";
 import { db } from "@/database/client";
@@ -40,8 +40,6 @@ export default async function AdminUsers({ searchParams }: RouteProps) {
   ).filter((a) => a in UserStatus);
   const nameFiltered = query.q;
 
-  console.log(statusFiltered);
-
   const [users, count] = await Promise.all([
     db.user.findMany({
       where: {
@@ -65,6 +63,11 @@ export default async function AdminUsers({ searchParams }: RouteProps) {
         image: true,
         description: true,
         updatedAt: true,
+        Post: {
+          select: {
+            id: true,
+          },
+        },
       },
       take: perPage,
       skip: (page - 1) * perPage,
