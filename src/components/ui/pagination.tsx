@@ -17,7 +17,6 @@ type PaginationProps = {
 export const Pagination = ({
   currentPage,
   pages,
-  perPage,
   total,
   showInThisPage,
   messageUnit = "",
@@ -60,7 +59,7 @@ export const Pagination = ({
         <Button
           variant="outline"
           size="icon"
-          disabled={currentPage === pages && pages <= 1}
+          disabled={currentPage === pages || pages <= 1}
           onClick={() => handleNavigation(currentPage + 1)}
         >
           <ChevronRight className="h-4 w-4" />
