@@ -35,8 +35,12 @@ type Route = {
 };
 
 const routes: Route[] = [
-  { href: "/home", label: "Início", Icon: <Home /> },
-  { href: "/tutorials", label: "Tutoriais", Icon: <Book /> },
+  { href: "/home", label: "Início", Icon: <Home className="h-6 w-6" /> },
+  {
+    href: "/tutorials",
+    label: "Tutoriais",
+    Icon: <Book className="h-6 w-6" />,
+  },
 ];
 
 type Props = {

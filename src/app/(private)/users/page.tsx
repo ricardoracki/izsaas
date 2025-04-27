@@ -18,6 +18,7 @@ import { UserBadge } from "./_components/user-badge";
 import { UserControls } from "./_components/user-controls";
 import { UserStatus } from "@/database/generated";
 import { db } from "@/database/client";
+import { authorizeOrRedirect } from "@/auth/utils";
 
 type RouteProps = {
   searchParams: Promise<{
@@ -29,6 +30,7 @@ type RouteProps = {
 };
 
 export default async function AdminUsers({ searchParams }: RouteProps) {
+  await authorizeOrRedirect("ADMIN", "/home");
   const query = await searchParams;
 
   const page = getIntQueryValue(query.page) || 1;
