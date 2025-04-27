@@ -20,6 +20,8 @@ import {
 import Link from "next/link";
 import { LikeButton } from "./_components/like-button";
 import { getServerAuthSession } from "@/auth";
+import { EditPostButton } from "./_components/edit-post";
+import { CopyButton } from "./_components/copy-button";
 
 type RouteProps = {
   params: Promise<{ id: string }>;
@@ -46,8 +48,6 @@ export default async function Dashboard(props: RouteProps) {
   if (!tutorial) {
     return <div>Tutorial não encontrado</div>;
   }
-
-  console.log("tutorial", tutorial);
 
   return (
     <>
@@ -83,13 +83,18 @@ export default async function Dashboard(props: RouteProps) {
             className="-translate-y-1/2 translate-x-1"
           />
         </div>
-        <div className="flex gap-3 ml-3">
+        <div className="hidden md:flex gap-3 ml-3">
+          <PublishButton post={tutorial} size="icon" />
+          <CopyButton post={tutorial} size="icon" />
+
           <Button size="icon" variant="outline">
             <Share2 />
           </Button>
-          <Button size="icon" variant="outline">
-            <Edit />
-          </Button>
+          <EditPostButton
+            post={tutorial}
+            userId={session?.user.id as string}
+            size="icon"
+          />
         </div>
       </div>
       {/*  <h2 className="text-lg text-muted-foreground">
@@ -111,13 +116,13 @@ export default async function Dashboard(props: RouteProps) {
 
       <div className="flex gap-3 flex-wrap ">
         <LikeButton
+          authorId={tutorial.author.id}
           postId={tutorial.id}
           userId={session?.user.id as string}
           liked={!!tutorial.PostReaction.length}
         />
-        <Button variant="ghost">
-          <Edit /> Editar tutorial
-        </Button>
+        <CopyButton post={tutorial} />
+        <EditPostButton post={tutorial} userId={session?.user.id as string} />
         <Button variant="ghost">
           <Share2 /> Compartilhar
         </Button>

@@ -18,9 +18,10 @@ import { publishPost } from "../actions";
 
 type publishButtonProps = {
   post: Pick<Post, "id" | "status">;
+  size?: "icon" | "default";
 };
 
-export function PublishButton({ post }: publishButtonProps) {
+export function PublishButton({ post, size }: publishButtonProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -42,8 +43,14 @@ export function PublishButton({ post }: publishButtonProps) {
 
   return (
     <>
-      <Button variant="ghost" onClick={() => setOpen(true)} disabled={loading}>
-        <Pin /> {loading ? "Publicando..." : "Publicar"}
+      <Button
+        title="Publicar tutorial"
+        variant={size == "icon" ? "outline" : "ghost"}
+        size={size}
+        onClick={() => setOpen(true)}
+        disabled={loading}
+      >
+        <Pin /> {size !== "icon" && (loading ? "Publicando..." : "Publicar")}
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogPortal>

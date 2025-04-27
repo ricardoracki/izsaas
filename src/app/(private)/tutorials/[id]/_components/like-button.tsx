@@ -9,9 +9,11 @@ import { cn } from "@/lib/utils";
 export function LikeButton({
   postId,
   userId,
+  authorId,
   liked = false,
 }: {
   postId: string;
+  authorId: string;
   userId: string;
   liked?: boolean;
 }) {
@@ -24,6 +26,8 @@ export function LikeButton({
       console.error("Error liking post:", error);
     }
   }
+
+  if (authorId === userId) return null;
 
   return (
     <Button variant="ghost" onClick={handleLike} disabled={liked}>
