@@ -20,6 +20,15 @@ import { useState } from "react";
 import { createPost } from "./actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import Link from "next/link";
 
 const formSchema = z.object({
   title: z
@@ -35,7 +44,7 @@ type FormSchema = z.infer<typeof formSchema>;
 
 export default function New() {
   const [loading, setLoading] = useState(false);
-  const [isDraft, setIsDraft] = useState(false);
+  const [isDraft, setIsDraft] = useState(true);
   const [files, setFiles] = useState<File[]>([]);
   const router = useRouter();
 
@@ -74,6 +83,27 @@ export default function New() {
 
   return (
     <>
+      <Breadcrumb className="mb-3">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/home">Início</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/tutorials" replace>
+                Tutoriais
+              </Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>...</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <h1 className="text-3xl font-bold mb-2 text-ellipsis line-clamp-1">
         Criar tutorial
       </h1>

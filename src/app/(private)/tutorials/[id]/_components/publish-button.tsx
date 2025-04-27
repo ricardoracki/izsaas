@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { publishPost } from "../actions";
 
 type publishButtonProps = {
-  post: Post;
+  post: Pick<Post, "id" | "status">;
 };
 
 export function PublishButton({ post }: publishButtonProps) {
@@ -42,8 +42,8 @@ export function PublishButton({ post }: publishButtonProps) {
 
   return (
     <>
-      <Button variant="ghost" onClick={() => setOpen(true)}>
-        <Pin /> Publicar
+      <Button variant="ghost" onClick={() => setOpen(true)} disabled={loading}>
+        <Pin /> {loading ? "Publicando..." : "Publicar"}
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogPortal>

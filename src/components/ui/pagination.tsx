@@ -60,7 +60,7 @@ export const Pagination = ({
         <Button
           variant="outline"
           size="icon"
-          disabled={currentPage === pages}
+          disabled={currentPage === pages && pages <= 1}
           onClick={() => handleNavigation(currentPage + 1)}
         >
           <ChevronRight className="h-4 w-4" />

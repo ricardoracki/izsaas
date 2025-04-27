@@ -34,6 +34,10 @@ enum SharedPostStatus {
   PERMANENT
   SOFT_DELETED
 }
+enum PostReactionType {
+  LIKE
+  DISLIKE
+}
 
 model User {
   id          String     @id @default(uuid())
@@ -50,6 +54,7 @@ model User {
 
   Post       Post[]
   SharedPost SharedPost[]
+  PostReaction PostReaction[]
 
   @@map("users")
 }
@@ -61,7 +66,6 @@ model Post {
   tags    String[]
   images  String[]   @default([])
   views   Int        @default(0)
-  likes   Int        @default(0)
   status  PostStatus @default(DRAFT)
   userId  String
 
@@ -70,6 +74,7 @@ model Post {
 
   author     User         @relation(fields: [userId], references: [id], onDelete: NoAction)
   SharedPost SharedPost[]
+  PostReaction PostReaction[]
 
   @@map("posts")
 }
@@ -92,4 +97,20 @@ model SharedPost {
 
   @@unique([userId, postId])
   @@map("shared_posts")
+}
+
+model PostReaction {
+  id      String   @id @default(uuid())
+  type    PostReactionType  @default(LIKE)
+  userId  String
+  postId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("post_reactions")
 }

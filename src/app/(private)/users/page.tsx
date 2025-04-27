@@ -93,10 +93,6 @@ export default async function AdminUsers({ searchParams }: RouteProps) {
           <Shield className="h-6 w-6" />
           Administração de Usuários
         </h1>
-        <Button>
-          <UserCheck className="h-4 w-4 mr-2" />
-          Novo Usuário
-        </Button>
       </div>
 
       <div className="rounded-lg border shadow-sm">

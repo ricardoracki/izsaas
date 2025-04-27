@@ -20,3 +20,15 @@ export async function publishPost(id: string) {
   revalidatePath(`/tutorials/${id}`);
   revalidatePath("/tutorials");
 }
+
+export async function likePost(postId: string, userId: string) {
+  await db.postReaction.create({
+    data: {
+      postId,
+      userId,
+    },
+  });
+
+  revalidatePath(`/tutorials/${postId}`);
+  revalidatePath("/tutorials");
+}

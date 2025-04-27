@@ -1,4 +1,4 @@
-import { Edit, Share2, Trash } from "lucide-react";
+import { Edit, Share2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
+import { LikeButton } from "./_components/like-button";
+import { getServerAuthSession } from "@/auth";
 
 type RouteProps = {
   params: Promise<{ id: string }>;
@@ -25,13 +27,27 @@ type RouteProps = {
 
 export default async function Dashboard(props: RouteProps) {
   const { id } = await props.params;
+  const session = await getServerAuthSession();
   const tutorial = await db.post.findFirst({
     where: { id },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      status: true,
+      tags: true,
+      author: true,
+      PostReaction: {
+        where: { userId: session?.user.id as string },
+      },
+    },
   });
 
   if (!tutorial) {
     return <div>Tutorial não encontrado</div>;
   }
+
+  console.log("tutorial", tutorial);
 
   return (
     <>
@@ -93,7 +109,12 @@ export default async function Dashboard(props: RouteProps) {
 
       <Separator className="mt-2 mb-6" />
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 flex-wrap ">
+        <LikeButton
+          postId={tutorial.id}
+          userId={session?.user.id as string}
+          liked={!!tutorial.PostReaction.length}
+        />
         <Button variant="ghost">
           <Edit /> Editar tutorial
         </Button>
