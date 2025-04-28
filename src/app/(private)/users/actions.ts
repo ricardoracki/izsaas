@@ -9,9 +9,8 @@ export async function setUserStatus(
   user: Omit<UserType, 'password'>,
   status: UserStatus
 ) {
-  'use server'
   await db.user.update({
-    data: { ...user, status },
+    data: { status },
     where: { id: user.id },
   })
 
